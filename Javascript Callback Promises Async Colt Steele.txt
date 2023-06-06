@@ -1,0 +1,110 @@
+---------------
+JS Callbacks, Promises, Asnync  Colt Steele
+---------------
+
+
+Ex: making a request
+from an imdb api, netflix, weather api
+
+it takes time , 
+sometimes it works , sometimes it won't
+
+when making requests, we will have our success and failure callbacks
+with callbacks, we have to keep nesting the functions, not easily readable  >> Callback Hell
+
+To work around this, there comes the......
+
+>>>> Promises:
+
+Promise is an object representing the eventual completion or failure of an async operation
+
+3 States:
+> pending
+> resolved
+> rejected
+
+return value will be promise{<pending>} (or) promise{<resolved>} (or) promise{<rejected>}
+
+-- Promise is returned object to which you attach callbacks, instead of passing callbacks into a function
+
+Syntax:
+
+const request = fakeRequestPromise('yelp.com/api/coffee');
+
+request
+	.then(() => {						// In case of success, 'object'.then() is used; promise resolved
+		console.log("IT WORKED!!")
+	})
+	.catch(() => {						// In case of success, 'object'.catch() is used; promise rejected
+		console.log("OH NO, ERROR!!")
+	}
+
+
+we still have to nest if we have to attach another on the event of a success or failure. jst like callbacks
+
+There is another workaround for that
+
+
+fakeRequestPromise('yelp.com/api/coffee/page1')
+	.then(() => {						// In case of success, return the new request
+		console.log("IT WORKED!!")
+		return fakeRequestPromise('yelp.com/api/coffee/page2')
+	})
+	.then(() => {						// In case of success, return the new promise from within the .then() callback
+		console.log("IT WORKED!!")
+		return fakeRequestPromise('yelp.com/api/coffee/page2')
+	})
+	.then(() => {						// In case of success, return the new request
+		console.log("IT WORKED!!")
+		return fakeRequestPromise('yelp.com/api/coffee/page3')
+	})	
+	.catch(() => {						// In case of failure, we only have to write .catch() once
+		console.log("OH NO, ERROR!!")
+	}
+	
+	dependent async actions
+	
+	
+	promises are returned and rejected with values
+	
+	
+----> Creating our own promises:
+
+>> Always have two parameters
+1. Resolve
+2. Reject
+
+they are functions that we can execute inside this promise at any time
+
+//Resolved
+new Promise((resolve, reject) => {	
+	resolve();
+})
+
+//Rejected
+new Promise((resolve, reject) => {
+	reject();
+})
+
+//Pending
+new Promise((resolve, reject) => {
+	
+})
+
+
+const fakeRequest = (url) => {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve();
+		}, 1000)
+	})
+}
+
+fakeRequest('dogs/1')
+	.then((data) => {
+		console.log(""Done with the request")
+		console.log('data is: 'data)
+	})
+	.catch((err) => {
+		console.log("OH NO!", err)
+	})
